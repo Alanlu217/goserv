@@ -1,4 +1,4 @@
-module gotest
+module github.com/Alanlu217/goserv
 
 go 1.24.2
 
