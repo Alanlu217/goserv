@@ -8,18 +8,18 @@ import (
 )
 
 type Io interface {
-	Handle(dash DashRequest)
+	SetPin(pin int8, value bool)
 }
 
 type LogIo struct{}
 
-func (LogIo) Handle(dash DashRequest) {
-	log.Info().Msg(fmt.Sprint(dash))
+func (LogIo) SetPin(pin int8, value bool) {
+	log.Info().Msg(fmt.Sprintf("set pin %d to %t", pin, value))
 }
 
 type RPiIo struct{}
 
-func (RPiIo) setPin(pin int8, value bool) {
+func (RPiIo) SetPin(pin int8, value bool) {
 	valint := int8(0)
 	if value {
 		valint = 1
@@ -27,16 +27,4 @@ func (RPiIo) setPin(pin int8, value bool) {
 
 	cmd := exec.Command("scripts/ioset.sh", fmt.Sprintf("GPIO%d=%d", pin, valint))
 	go cmd.Run()
-}
-
-func (r RPiIo) Handle(dash DashRequest) {
-	switch dash.Id {
-	case "b1":
-		log.Info().Msg("Turning LED ON")
-		r.setPin(18, true)
-
-	case "b2":
-		log.Info().Msg("Turning LED OFF")
-		r.setPin(18, false)
-	}
 }

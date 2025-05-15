@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 	"time"
@@ -12,8 +13,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	led_pin = 18
+)
+
 type DashRequest struct {
-	Id string
+	Id int
+}
+
+type Button struct {
+	Name    string
+	Handler func()
 }
 
 func main() {
@@ -32,22 +42,59 @@ func main() {
 		io_handler = LogIo{}
 	}
 
+	buttons := []Button{
+		{
+			Name:    "Turn LED On",
+			Handler: func() { io_handler.SetPin(led_pin, true) },
+		},
+		{
+			Name:    "Turn LED Off",
+			Handler: func() { io_handler.SetPin(led_pin, false) },
+		},
+		{},
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "site/index.html")
 	})
+
 	mux.HandleFunc("GET /favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "site/favicon.ico")
 	})
+
 	mux.HandleFunc("GET /dash", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "site/dash.html")
+		tmpl, err := template.ParseFiles("site/dash.html")
+		if err != nil {
+			log.Err(err)
+			fmt.Fprint(w, "Internal Error")
+			return
+		}
+
+		data := map[string]any{
+			"Buttons": buttons,
+		}
+
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			log.Err(err)
+		}
 	})
+
+	mux.HandleFunc("GET /internal/dash.css", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "site/dash.css")
+	})
+
+	mux.HandleFunc("GET /internal/dash.js", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "site/dash.js")
+	})
+
 	mux.HandleFunc("POST /dash", func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		d := DashRequest{}
 		decoder.Decode(&d)
-		io_handler.Handle(d)
+		buttons[d.Id].Handler()
 	})
 
 	server := http.Server{
@@ -55,7 +102,7 @@ func main() {
 		Handler: Logging(mux),
 	}
 
-	log.Info().Msg(fmt.Sprintf("Server starting on %s", server.Addr))
+	log.Info().Msgf("Server starting on %s", server.Addr)
 	defer log.Printf("Server stopping\n")
 	log.Fatal().Err((server.ListenAndServe()))
 }
@@ -64,6 +111,6 @@ func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		log.Info().Msg(fmt.Sprintf("%s %s %s", r.Method, r.URL.Path, time.Since(start)))
+		log.Info().Msgf("%s %s %s", r.Method, r.URL.Path, time.Since(start))
 	})
 }
