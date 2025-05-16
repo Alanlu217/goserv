@@ -15,6 +15,15 @@ import (
 
 const (
 	led_pin = 18
+
+	on_1_pin  = 25
+	off_1_pin = 24
+
+	on_2_pin  = 23
+	off_2_pin = 22
+
+	on_3_pin  = 18
+	off_3_pin = 17
 )
 
 type DashRequest struct {
@@ -44,14 +53,29 @@ func main() {
 
 	buttons := []Button{
 		{
-			Name:    "Turn LED On",
-			Handler: func() { io_handler.SetPin(led_pin, true) },
+			Name:    "Turn Port 1 On",
+			Handler: func() { io_handler.TogglePin(on_1_pin) },
 		},
 		{
-			Name:    "Turn LED Off",
-			Handler: func() { io_handler.SetPin(led_pin, false) },
+			Name:    "Turn Port 2 On",
+			Handler: func() { io_handler.TogglePin(on_2_pin) },
 		},
-		{},
+		{
+			Name:    "Turn Port 3 On",
+			Handler: func() { io_handler.TogglePin(on_3_pin) },
+		},
+		{
+			Name:    "Turn Port 1 Off",
+			Handler: func() { io_handler.TogglePin(off_1_pin) },
+		},
+		{
+			Name:    "Turn Port 2 Off",
+			Handler: func() { io_handler.TogglePin(off_2_pin) },
+		},
+		{
+			Name:    "Turn Port 3 Off",
+			Handler: func() { io_handler.TogglePin(off_3_pin) },
+		},
 	}
 
 	mux := http.NewServeMux()
@@ -94,7 +118,7 @@ func main() {
 		decoder := json.NewDecoder(r.Body)
 		d := DashRequest{}
 		decoder.Decode(&d)
-		buttons[d.Id].Handler()
+		go buttons[d.Id].Handler()
 	})
 
 	server := http.Server{

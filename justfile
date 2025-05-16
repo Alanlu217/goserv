@@ -12,7 +12,11 @@ build:
     go build -o goserv src/*
 
 pibuild:
-    GOOS=linux GOARCH=arm64 go build -o piserv src/*
+    GOOS=linux GOARCH=arm go build -o piserv src/*
+
+send: pibuild
+    tar cf pi.tar.gz site scripts piserv
+    scp pi.tar.gz aln@192.168.1.111:~    
 
 clean:
     rm -rf goserv piserv logs/
