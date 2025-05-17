@@ -37,6 +37,6 @@ func (RPiIo) SetPin(pin int8, value bool) {
 
 func (r RPiIo) TogglePin(pin int8) {
 	r.SetPin(pin, true)
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(200 * time.Millisecond)
 	r.SetPin(pin, false)
 }
