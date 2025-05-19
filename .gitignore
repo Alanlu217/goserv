@@ -1,3 +1,4 @@
 logs/
 goserv
 piserv
+*.tar.gz

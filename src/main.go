@@ -130,7 +130,7 @@ func main() {
 	})
 
 	server := http.Server{
-		Addr:    "127.0.0.1:8888",
+		Addr:    "0.0.0.0:8888",
 		Handler: Logging(mux),
 	}
 
