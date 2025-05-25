@@ -16,7 +16,7 @@ pibuild:
 
 send: pibuild
     tar cf pi.tar.gz site scripts piserv
-    scp pi.tar.gz aln@192.168.1.111:~    
+    scp pi.tar.gz aln@alnpi.local:~
 
 clean:
     rm -rf goserv piserv logs/

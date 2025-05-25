@@ -28,6 +28,9 @@ const (
 
 	on_3_pin  = 18
 	off_3_pin = 17
+
+	on_4_pin  = 8
+	off_4_pin = 7
 )
 
 type DashRequest struct {
@@ -59,28 +62,36 @@ func main() {
 
 	buttons := []Button{
 		{
-			Name:    "Turn Port 1 On",
+			Name:    "1 On",
 			Handler: func() { io_handler.TogglePin(on_1_pin) },
 		},
 		{
-			Name:    "Turn Port 2 On",
+			Name:    "2 On",
 			Handler: func() { io_handler.TogglePin(on_2_pin) },
 		},
 		{
-			Name:    "Turn Port 3 On",
+			Name:    "3 On",
 			Handler: func() { io_handler.TogglePin(on_3_pin) },
 		},
 		{
-			Name:    "Turn Port 1 Off",
+			Name:    "4 On",
+			Handler: func() { io_handler.TogglePin(on_4_pin) },
+		},
+		{
+			Name:    "1 Off",
 			Handler: func() { io_handler.TogglePin(off_1_pin) },
 		},
 		{
-			Name:    "Turn Port 2 Off",
+			Name:    "2 Off",
 			Handler: func() { io_handler.TogglePin(off_2_pin) },
 		},
 		{
-			Name:    "Turn Port 3 Off",
+			Name:    "3 Off",
 			Handler: func() { io_handler.TogglePin(off_3_pin) },
+		},
+		{
+			Name:    "4 Off",
+			Handler: func() { io_handler.TogglePin(off_4_pin) },
 		},
 	}
 
