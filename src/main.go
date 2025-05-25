@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"syscall"
 	"time"
@@ -103,6 +104,17 @@ func main() {
 
 	mux.HandleFunc("GET /favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "site/favicon.ico")
+	})
+
+	mux.HandleFunc("GET /uptime", func(w http.ResponseWriter, r *http.Request) {
+		cmd := exec.Command("uptime")
+		data, err := cmd.Output()
+		if err != nil {
+			log.Err(err)
+			return
+		}
+
+		w.Write(data)
 	})
 
 	dash_handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
