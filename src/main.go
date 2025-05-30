@@ -145,12 +145,12 @@ func main() {
 		http.ServeFile(w, r, "site/dash.js")
 	})
 
-	mux.HandleFunc("POST /dash", func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("POST /dash", Auth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		d := DashRequest{}
 		decoder.Decode(&d)
 		go buttons[d.Id].Handler()
-	})
+	})))
 
 	server := http.Server{
 		Addr:    "0.0.0.0:8888",
