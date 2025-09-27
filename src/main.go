@@ -48,51 +48,43 @@ func main() {
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	rpi := flag.Bool("rpi", false, "Run on Rpi or not")
+	debug := flag.Bool("debug", false, "Test without setting pins")
 	flag.Parse()
 
 	var io_handler Io
 
-	if *rpi {
-		log.Info().Msg("Using RPiIo")
-		io_handler = RPiIo{}
-	} else {
+	if *debug {
 		log.Info().Msg("Using LogIo")
 		io_handler = LogIo{}
+	} else {
+		log.Info().Msg("Using RPiIo")
+		io_handler = RPiIo{}
 	}
 
 	buttons := []Button{
 		{
-			Name:    "1 On",
+			Name:    "L On",
 			Handler: func() { io_handler.TogglePin(on_1_pin) },
 		},
 		{
-			Name:    "2 On",
+			Name:    "F On",
 			Handler: func() { io_handler.TogglePin(on_2_pin) },
 		},
 		{
-			Name:    "3 On",
+			Name:    "H On",
 			Handler: func() { io_handler.TogglePin(on_3_pin) },
 		},
 		{
-			Name:    "4 On",
-			Handler: func() { io_handler.TogglePin(on_4_pin) },
-		},
-		{
-			Name:    "1 Off",
+			Name:    "L Off",
 			Handler: func() { io_handler.TogglePin(off_1_pin) },
 		},
 		{
-			Name:    "2 Off",
+			Name:    "F Off",
 			Handler: func() { io_handler.TogglePin(off_2_pin) },
 		},
 		{
-			Name:    "3 Off",
+			Name:    "H Off",
 			Handler: func() { io_handler.TogglePin(off_3_pin) },
-		},
-		{
-			Name:    "4 Off",
-			Handler: func() { io_handler.TogglePin(off_4_pin) },
 		},
 	}
 
