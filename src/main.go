@@ -19,19 +19,11 @@ import (
 )
 
 const (
-	led_pin = 18
-
 	on_1_pin  = 25
 	off_1_pin = 24
 
-	on_2_pin  = 23
-	off_2_pin = 22
-
-	on_3_pin  = 18
-	off_3_pin = 17
-
-	on_4_pin  = 8
-	off_4_pin = 7
+	on_2_pin  = 18
+	off_2_pin = 17
 )
 
 type DashRequest struct {
@@ -71,20 +63,12 @@ func main() {
 			Handler: func() { io_handler.TogglePin(on_2_pin) },
 		},
 		{
-			Name:    "H On",
-			Handler: func() { io_handler.TogglePin(on_3_pin) },
-		},
-		{
 			Name:    "L Off",
 			Handler: func() { io_handler.TogglePin(off_1_pin) },
 		},
 		{
 			Name:    "F Off",
 			Handler: func() { io_handler.TogglePin(off_2_pin) },
-		},
-		{
-			Name:    "H Off",
-			Handler: func() { io_handler.TogglePin(off_3_pin) },
 		},
 	}
 

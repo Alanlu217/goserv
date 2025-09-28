@@ -31,7 +31,7 @@ func (RPiIo) SetPin(pin int8, value bool) {
 		valint = 1
 	}
 
-	cmd := exec.Command("scripts/ioset.sh", fmt.Sprintf("GPIO%d=%d", pin, valint))
+	cmd := exec.Command("scripts/ioset.sh", fmt.Sprintf("%d=%d", pin, valint))
 	go cmd.Run()
 }
 

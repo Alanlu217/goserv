@@ -6,5 +6,4 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 pin=$1
-gpioset -z $pin
-killall gpioset
+gpioset 0 $pin
